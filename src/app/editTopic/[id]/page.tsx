@@ -1,6 +1,8 @@
 import EditTopicForm from '@/components/EditTopicForm'
 import connectMongodb from '@/libs/mongodb'
 import Topic from '@/models/topic'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 
 const getTopicById = async (id: string) => {
   try {
@@ -22,6 +24,11 @@ export default async function EditTopic({
 }: {
   params: Promise<{ id: string }>
 }) {
+  const session = await auth()
+  if (!session) {
+    redirect('/api/auth/signin')
+  }
+
   const { id } = await params
   const data = await getTopicById(id)
 
